@@ -43,84 +43,99 @@
 
 
     <section>
-        <article><h1>MyOrg</h1>
-<p>This project was generated using <a href="https://nx.dev">Nx</a>.</p>
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
-<p>🔎 <strong>Smart, Extensible Build Framework</strong></p>
-<h2>Adding capabilities to your workspace</h2>
-<p>Nx supports many plugins which add capabilities for developing different types of applications and different tools.</p>
-<p>These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.</p>
-<p>Below are our core plugins:</p>
+        <article><h1>Nx by Nrwl</h1>
+<p>Nx takes monorepo style development, which is used at Google, Facebook and Microsoft, and makes it available for everyone. In this course, we'll use Nx to help us build a simple app for a company called the Board Game Hoard. We'll create a store site for them using Angular, a review site using React, and an API using express.</p>
+<p>Along the way, we'll learn about the three main things that Nx gives us:</p>
 <ul>
-<li><a href="https://reactjs.org">React</a>
-<ul>
-<li><code>npm install --save-dev @nrwl/react</code></li>
-</ul>
+<li>
+<p>Out of the box configuration of frameworks and modern tools so that you can focus more on your application and less on configuration.</p>
 </li>
-<li>Web (no framework frontends)
-<ul>
-<li><code>npm install --save-dev @nrwl/web</code></li>
-</ul>
+<li>
+<p>Easily share your code across multiple applications or teams while enforcing clean integration points.</p>
 </li>
-<li><a href="https://angular.io">Angular</a>
-<ul>
-<li><code>npm install --save-dev @nrwl/angular</code></li>
-</ul>
-</li>
-<li><a href="https://nestjs.com">Nest</a>
-<ul>
-<li><code>npm install --save-dev @nrwl/nest</code></li>
-</ul>
-</li>
-<li><a href="https://expressjs.com">Express</a>
-<ul>
-<li><code>npm install --save-dev @nrwl/express</code></li>
-</ul>
-</li>
-<li><a href="https://nodejs.org">Node</a>
-<ul>
-<li><code>npm install --save-dev @nrwl/node</code></li>
-</ul>
+<li>
+<p>Understand the dependency graph of your codebase so that you can run tests or other actions on exactly the areas affected by a PR and no more.</p>
 </li>
 </ul>
-<p>There are also many <a href="https://nx.dev/community">community plugins</a> you could add.</p>
-<h2>Generate an application</h2>
-<p>Run <code>nx g @nrwl/react:app my-app</code> to generate an application.</p>
+<h2>How to create an NX workspace</h2>
+<pre class="prettyprint source lang-bash"><code>npx create-nx-workspace my-org
+
+>empty
+web components
+angular
+angular-test
+react
+react-express
+
+?CLI to power the Nx workspace
+>Nx
+Angular CLI
+</code></pre>
+<p>then open the <code>my-org</code> folder in vs code</p>
+<p>All the code in an Nx workspace lives inside the apps and libs folders. Apps are the main entry point for a runnable application. We recommend keeping apps as lightweight as possible, with all the heavy lifting being done by libraries that are imported by each app.</p>
+<p>The tools folder is for scripts that act on your code. Like database scripts or deploy scripts. And also custom schematics which are scripts that Nx uses to create or modify your existing code.</p>
+<p>Nx also generates some sensible defaults for Prettier and Typescript, which can be overridden by an individual app or library, if necessary.</p>
+<p>nx.json and workspace.json help Nx know how your apps and libraries relate to each other and what actions can be performed on each app or library. If you were using the Angular CLI with Nx, workspace.json would be named angular.json instead.</p>
+<h2>Create an app and a UI libary</h2>
+<p>Let's add a React app to the monorepo. To add the React plugin to Nx, we'll run <code>yarn add -D @nrwl/react</code> as a dev dependency. Now we can use the Nx CLI to generate a React app. In this command generate is the command name, <code>@nrwl/react</code> is the plugin or collection name and app is the schematic name.</p>
+<pre class="prettyprint source lang-bash"><code>yarn add -D @nrwl/react
+</code></pre>
+<pre class="prettyprint source lang-bash"><code>ng generate @nrwl/react:app
+
+?What name would you like to use for the application? my-site
+?Which stylesheet format would you like to use? (Use arrow keys)
+>CSS
+SASS(.scss)
+Stylus(.styl)
+LESS
+styled-components
+emotion
+
+?Would you like to configure routing for this application? Yes
+</code></pre>
+<p>Now if you look in the apps folder, you'll see a my-site app and a my-site-e2e folder for running end to end tests against the my-site app. The end to end tests are written in Cypress by default.</p>
+<p>The my-site folder contains some configuration files, and the source code of our app. app.tsx contains some scaffolding to get you started on your app.</p>
+<p>Now if you look in workspace.json, you'll notice an entry for my-site and my-site-e2e. For each project, underneath architect, is a list of each action you can run on the project. For my-site, you can build, serve, lint and test. For my-site-e2e, you can run e2e and lint.</p>
+<p>Let's use Nx to serve the my-site app. And here's what that default site looks like.</p>
+<p><code>nx serve my-site</code>
+<code>open http://localhost:4200</code>
+<img src="https://i.ibb.co/2c9CYF0/Nx-Default.png" alt="NX Default page"></p>
+<p>Now let's create a React library with the name ui-header. You can see that there's now a library with the name ui-header.</p>
+<p><code>nx g @nrwl/react:lib ui-header</code></p>
+<p>We'll create a React component inside the ui-header library with the name page-title. Yes we want to export it. And now let's see what that created.</p>
+<p><code>ng g @nrwl/react:component --project=ui-header page-title</code></p>
+<p>and answer <code>yes</code> to <code>should the component be exported to the project?</code></p>
+<p>We have a page-title.tsx file that contains our component and the component is exported from the index.ts file where it can be references by other libraries or apps. Nx uses a lint rule to block other libraries or apps from accessing anything inside this library that is not explicitly exported in the index.ts file.</p>
+<p>In a large monorepo, with many libraries and apps, it can be difficult to understand how they all relate to each other. That's where the nx dep-graph command comes in handy. This dependency graph shows all the apps and libraries that are in our monorepo. As you can see, the end to end app depends on the my-site app, but the ui-header library is not being used by anything.</p>
+<p><code>nx dep-graph</code></p>
+<p><img src="https://i.ibb.co/d2rCN9f/dep-graph.png" alt="dep-graph"></p>
+<p>Let's use the PageTitle component and see how the dependency graph changes. Inside of app.tsx, we'll import from the ui-header library and get the PageTitle component. Then we'll use the PageTitle component, and run that dependency graph again.</p>
+<p><img src="https://i.ibb.co/N2WSqp3/dep-graph-2.png" alt="dep-graph2"></p>
+<p>When we only added a couple lines of code, Nx can tell the my-site app now depends on the ui-header library.</p>
+<h2>Add a Server API</h2>
+<p>Now let's add an express app to serve up our API. First we'll add the <code>@nrwl/express</code> plugin. Then we'll list out the options on the <code>@nrwl/express:app schematic using the --help</code> flag. We'll use the <code>--frontendProject</code> flag to add a proxy to our my-site app. We'll generate an express app called api and tell it that the frontend project is my-site. And put it in the root directory.</p>
 <blockquote>
-<p>You can use any of the plugins above to generate applications as well.</p>
+<p><code>nx g @nrwl/express:app api ==frontendProject=my-site</code> and hit <code>enter</code> to put it in the root directory</p>
 </blockquote>
-<p>When using Nx, you can create multiple applications and libraries in the same workspace.</p>
-<h2>Generate a library</h2>
-<p>Run <code>nx g @nrwl/react:lib my-lib</code> to generate a library.</p>
+<p>Now let's look at the generated API. In the src folder, the main.ts file has one endpoint at /api that returns a JSON object with a message property.</p>
+<p>Let's have our React app access this API. We'll import <code>useState</code> and <code>useEffect</code> from React and then wire those up to make the API call. Then let's display the API response in the component.</p>
+<p>Now let's serve the API and the React app. Now you can see in the Network tab that the API call is being made and the message is being displayed in our app.</p>
 <blockquote>
-<p>You can also use any of the plugins above to generate libraries as well.</p>
+<p><code>nx serve api</code> and <code>nx serve my-site</code></p>
 </blockquote>
-<p>Libraries are shareable across libraries and applications. They can be imported from <code>@my-org/mylib</code>.</p>
-<h2>Development server</h2>
-<p>Run <code>nx serve my-app</code> for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.</p>
-<h2>Code scaffolding</h2>
-<p>Run <code>nx g @nrwl/react:component my-component --project=my-app</code> to generate a new component.</p>
-<h2>Build</h2>
-<p>Run <code>nx build my-app</code> to build the project. The build artifacts will be stored in the <code>dist/</code> directory. Use the <code>--prod</code> flag for a production build.</p>
-<h2>Running unit tests</h2>
-<p>Run <code>nx test my-app</code> to execute the unit tests via <a href="https://jestjs.io">Jest</a>.</p>
-<p>Run <code>nx affected:test</code> to execute the unit tests affected by a change.</p>
-<h2>Running end-to-end tests</h2>
-<p>Run <code>ng e2e my-app</code> to execute the end-to-end tests via <a href="https://www.cypress.io">Cypress</a>.</p>
-<p>Run <code>nx affected:e2e</code> to execute the end-to-end tests affected by a change.</p>
-<h2>Understand your workspace</h2>
-<p>Run <code>nx dep-graph</code> to see a diagram of the dependencies of your projects.</p>
-<h2>Further help</h2>
-<p>Visit the <a href="https://nx.dev">Nx Documentation</a> to learn more.</p>
-<h2>☁ Nx Cloud</h2>
-<h3>Distributed Computation Caching &amp; Distributed Task Execution</h3>
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-<p>Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.</p>
-<p>Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.</p>
-<p>Visit <a href="https://nx.app/">Nx Cloud</a> to learn more.
-#� �N�X�-�M�o�n�o�-�R�e�p�o�-�T�e�s�t�
-�
-�</p></article>
+<p>There's a problem with this approach though. Both the url and the response type can get out of sync between the client app and the API. So let's create a plain typescript library that will hold that shared information. The <code>@nrwl/workspace</code> collection has a library schematic that makes a plain Typescript library. We'll call it <code>api-interface</code>.</p>
+<blockquote>
+<p><code>nx g @nrwl/workspace:lib api-interface</code></p>
+</blockquote>
+<p>Let's go into the <code>api-interface.ts</code> file of that library and create an interface and an <code>API_URL</code> constant. Now in our client app, we can import from our new library using the @my-org alias that Nx configures for us. We'll import the ApiResponse interface and the <code>API_URL</code>. useState is of type ApiResponse and here we'll use API_URL instead of that magic string. Now let's do the same thing in our express app. We'll explicitly type the server response, import what we need for the shared interface and use <code>API_URL</code> constant.</p>
+<p>Now when we run <code>nx dep-graph</code> again, you can see that both the my-site app and the express api depend on the api-interface library. If this interface ever changes, both the api and the client side app need to update to account for the new interface.</p>
+<p><img src="https://i.ibb.co/7r6QhXx/dep-graph4.png" alt="dep-graph4"></p>
+<p>I've committed my changes to git, and you can see that my working directory is clean. I'm going to make a change to the api interface and you'll see that git now knows about the changes to the files. Now we can run an affected:dep-graph and you see that Nx knows that because we changed the api-interface, the api is affected as well as the my-site app and the my-site-e2e app. So if we want to run a command on all the affected pieces of code, that command needs to be run against the api, api-interface, my-site app and my-site-e2e app.</p>
+<blockquote>
+<p><code>ng affected:dep-graph</code></p>
+</blockquote>
+<p><img src="https://i.ibb.co/2hrYx2f/dep-graph-5.png" alt="dep-graph5"></p>
+<p>You can run the nx affected command with any target command: like test, or build or your own custom target with the --target flag. We'll run nx affected:test to make sure that everything is still working after this change. You see that Nx ran test against the api-interface, against the my-site app and against the api. Nx skipped the my-site-e2e app, since that app has no test action configured for it in workspace.json. All our tests pass, and we can submit this PR for code review.</p></article>
     </section>
 
 
@@ -137,7 +152,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Aug 05 2021 14:58:37 GMT+0200 (South Africa Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Aug 05 2021 15:29:25 GMT+0200 (South Africa Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
