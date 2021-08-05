@@ -148,7 +148,7 @@ Now when we run `nx dep-graph` again, you can see that both the my-site app and 
 
 I've committed my changes to git, and you can see that my working directory is clean. I'm going to make a change to the api interface and you'll see that git now knows about the changes to the files. Now we can run an affected:dep-graph and you see that Nx knows that because we changed the api-interface, the api is affected as well as the my-site app and the my-site-e2e app. So if we want to run a command on all the affected pieces of code, that command needs to be run against the api, api-interface, my-site app and my-site-e2e app.
 
-> `ng affected:dep-graph`
+> `nx affected:dep-graph`
 
 ![dep-graph5](https://i.ibb.co/2hrYx2f/dep-graph-5.png)
 
