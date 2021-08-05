@@ -1,6 +1,3 @@
-
-## Create an app and a UI libary
-
 Let's add a React app to the monorepo. To add the React plugin to Nx, we'll run `yarn add -D @nrwl/react` as a dev dependency. Now we can use the Nx CLI to generate a React app. In this command generate is the command name, `@nrwl/react` is the plugin or collection name and app is the schematic name.
 
 ```bash
@@ -37,15 +34,21 @@ Now if you look in workspace.json, you'll notice an entry for my-site and my-sit
 
 Let's use Nx to serve the my-site app. And here's what that default site looks like.
 
+`nx serve my-site`
+`open http://localhost:4200`
+![NX Default page](https://i.ibb.co/2c9CYF0/Nx-Default.png)
+
 
 
 Now let's create a React library with the name ui-header. You can see that there's now a library with the name ui-header.
 
-
+`nx g @nrwl/react:lib ui-header`
 
 We'll create a React component inside the ui-header library with the name page-title. Yes we want to export it. And now let's see what that created.
 
+`ng g @nrwl/react:component --project=ui-header page-title`
 
+and answer `yes` to `should the component be exported to the project?`
 
 We have a page-title.tsx file that contains our component and the component is exported from the index.ts file where it can be references by other libraries or apps. Nx uses a lint rule to block other libraries or apps from accessing anything inside this library that is not explicitly exported in the index.ts file.
 
@@ -53,7 +56,7 @@ We have a page-title.tsx file that contains our component and the component is e
 
 In a large monorepo, with many libraries and apps, it can be difficult to understand how they all relate to each other. That's where the nx dep-graph command comes in handy. This dependency graph shows all the apps and libraries that are in our monorepo. As you can see, the end to end app depends on the my-site app, but the ui-header library is not being used by anything.
 
-
+`nx dep-graph`
 
 Let's use the PageTitle component and see how the dependency graph changes. Inside of app.tsx, we'll import from the ui-header library and get the PageTitle component. Then we'll use the PageTitle component, and run that dependency graph again.
 
