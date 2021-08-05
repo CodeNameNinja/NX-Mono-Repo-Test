@@ -18,6 +18,7 @@ export function App() {
         <h1>Welcome to my-site!</h1>
       </header>
       <main>
+        <PageTitle />
         {apiResponse.message}
       </main>
 
